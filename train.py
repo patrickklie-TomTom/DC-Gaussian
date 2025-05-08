@@ -26,6 +26,43 @@ from tqdm import tqdm
 from utils.image_utils import psnr
 from argparse import ArgumentParser, Namespace
 from arguments import ModelParams, PipelineParams, OptimizationParams
+import open3d as o3d
+import numpy as np
+
+
+def export_gaussians_to_ply(gaussians, filename):
+    """
+    Exports a set of Gaussian points to a .ply file for visualization. TODO: export really Gaussian splatting in 3DGS .ply format, not just points.
+    The function extracts the 3D positions and color features from the `gaussians` object, normalizes the colors,
+    and creates an Open3D point cloud. The point cloud is then saved to the specified .ply file.
+
+    Args:
+        gaussians: A data structure containing Gaussian information. It must have the following attributes:
+            - get_xyz: A method or property that provides the 3D positions of the Gaussians as a tensor.
+            - get_features_dc: A method or property that provides the color features of the Gaussians as a tensor.
+        filename (str): The path to the output .ply file.
+
+    The function extracts the 3D positions and color features from the `gaussians` object, normalizes the colors 
+    to the range [0, 1], and creates an Open3D point cloud. The point cloud is then saved to the specified .ply file.
+
+    Note:
+        - The `gaussians` object must support `.detach()`, `.cpu()`, and `.numpy()` operations for its attributes.
+        - The Open3D library (`open3d`) is required for this function to work.
+    """
+
+    # Extract positions and colors
+    xyz = gaussians.get_xyz.detach().cpu().numpy()
+    colors_dc = gaussians.get_features_dc.detach().squeeze(1).cpu().numpy()
+    colors = (colors_dc + 0.5).clip(0, 1)  # Normalize colors to [0, 1]
+
+    # Create Open3D point cloud
+    pcd = o3d.geometry.PointCloud()
+    pcd.points = o3d.utility.Vector3dVector(xyz)
+    pcd.colors = o3d.utility.Vector3dVector(colors)
+
+    # Write to .ply file
+    o3d.io.write_point_cloud(filename, pcd)
+
 try:
     from torch.utils.tensorboard import SummaryWriter
     TENSORBOARD_FOUND = True
@@ -34,6 +71,7 @@ except ImportError:
 
 SKY_TRAIN_ID = 10
 ROAD_TRAIN_ID = 0
+
 
 
 def training(dataset: ModelParams, opt: OptimizationParams, pipe: PipelineParams, testing_iterations, saving_iterations, checkpoint_iterations, checkpoint, debug_from):
