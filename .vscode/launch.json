@@ -23,7 +23,7 @@
             ],
             "console": "integratedTerminal",
             "env": {
-                "dataset": "${env:HOME}/data/input/bdd100k/bdd100k_1/",
+                "dataset": "${env:shared_data}/DC-Gaussian/input/bdd100k/bdd100k_1/",
                 "output": "${env:HOME}/dev/github/patrickklie-TomTom/wth2025-gaussian-splatting-from-dashcams/external/DC-Gaussian/output"
             },
             "python": "/home/califauser/.conda/envs/dcgaussian2/bin/python", 
