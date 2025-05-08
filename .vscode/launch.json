@@ -11,7 +11,7 @@
             "program": "${workspaceFolder}/train.py",
             "args": [
                 "-s", "${env:dataset}",
-                "-m", "${env:output}",
+                "-m", "./output",
                 "--eval",
                 "-r", "1",
                 "--win_type", "iom",
@@ -24,7 +24,23 @@
             "console": "integratedTerminal",
             "env": {
                 "dataset": "${env:shared_data}/DC-Gaussian/input/bdd100k/bdd100k_1/",
-                "output": "${env:HOME}/dev/github/patrickklie-TomTom/wth2025-gaussian-splatting-from-dashcams/external/DC-Gaussian/output"
+            },
+            "python": "/home/califauser/.conda/envs/dcgaussian2/bin/python", 
+            "justMyCode": true
+        },
+        {
+            "name": "Python: Render DC-Gaussian",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/render.py",
+            "args": [
+                "-s", "${env:dataset}",
+                "-m", "./output",
+                "--skip_train"
+            ],
+            "console": "integratedTerminal",
+            "env": {
+                "dataset": "${env:shared_data}/DC-Gaussian/input/bdd100k/bdd100k_1/",
             },
             "python": "/home/califauser/.conda/envs/dcgaussian2/bin/python", 
             "justMyCode": true
